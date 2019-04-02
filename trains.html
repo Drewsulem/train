@@ -83,7 +83,7 @@
         var dataRef = firebase.database();
         var trainName = "";
         var destination = "";
-        var arrival = moment(arrival, "HH:mm");
+        var arrival = "";
         var frequency = 0;
         $("#add-train").on("click", function (event) {
             event.preventDefault();
@@ -100,21 +100,23 @@
             });
         });
         dataRef.ref().on("child_added", function (snapshot) {
-            console.log(arrival)
-            var diffTime = moment(arrival).fromNow();
+            var newArrival = snapshot.val().arrival;
+            var convert = moment(newArrival, 'HH:mm');
+            var diffTime = moment(convert).fromNow();
+            console.log(diffTime);
+            console.log(convert);
             // var timeRemainder = diffTime % frequency
             // var timeUntilArrival = frequency - timeRemainder;
-            console.log(diffTime)
             console.log(snapshot.val());
             console.log(snapshot.val().trainName);
             console.log(snapshot.val().destination);
             console.log(snapshot.val().arrival);
             console.log(snapshot.val().frequency);
             // console.log(timeUntilArrival);
-            $("#trainName-display").prepend(snapshot.val().trainName);
-            $("#destination-display").prepend(snapshot.val().destination);
-            $("#arrival-display").prepend(snapshot.val().arrival);
-            $("#timeLeft-display").prepend(snapshot.val().timeUntilArrival);
+            $("#trainName-display").text(snapshot.val().trainName);
+            $("#destination-display").text(snapshot.val().destination);
+            $("#arrival-display").text(snapshot.val().arrival);
+            $("#timeLeft-display").text(diffTime);
 
         }, function (errorObject) {
             console.log("Errors handled: " + errorObject.code);
